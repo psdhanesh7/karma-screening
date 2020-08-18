@@ -24,6 +24,36 @@ router.post('/add', async (req, res) => {
     } catch(err) {  
         res.send({ success: false, message: err.message });
     }
-})
+});
+
+router.post('/edit/:authorId', async (req, res) => {
+    const { authorId } = req.params;
+    const { name, description } = req.body;
+
+    try {
+        const EDIT_AUTHOR_QUERY = `UPDATE authors 
+            SET author_name="${name}", author_description="${description}"
+            WHERE author_id=${authorId}`;
+
+        await db.query(EDIT_AUTHOR_QUERY);
+
+        res.send({ success: true, message: 'Author details updated successfully' });
+    } catch(err) {
+        return res.send({ success: false, message: err.message });
+    }
+});
+
+router.get('/delete/:authorId', async (req, res) => {
+    const { authorId } = req.params;
+
+    try {
+        const DELETE_AUTHOR_QUERY = `DELETE FROM authors WHERE author_id=${authorId}`;
+        await db.query(DELETE_AUTHOR_QUERY);
+        
+        return res.send({ success: true, message: 'Author deleted successfully' });
+    } catch(err) {
+        return res.send({ success: false, message: err.message });
+    }
+});
 
 module.exports = router;

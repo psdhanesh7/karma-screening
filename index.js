@@ -17,7 +17,7 @@ app.use('/api/reviews', reviewRoutes);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, (err) => {
+app.listen(PORT, err => {
     if(err) return console.log(err);
-    console.log(`Listening to port ${3000}`);
-})
+    console.log(`Listening to port ${PORT}`);
+});
