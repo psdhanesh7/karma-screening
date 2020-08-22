@@ -1,7 +1,5 @@
 const express = require('express');
 
-require('./config/mysql');
-
 const bookRoutes = require('./routes/bookRoutes');
 const authorRoutes = require('./routes/authorRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');

@@ -47,12 +47,13 @@ router.post('/', async(req, res) => {
 
 router.put('/:reviewId', async (req, res) => {
     const { reviewId } = req.params;
-    const { rating, description } = req.body;
+    const { rating, description, bookId } = req.body;
 
     try {
         const EDIT_REVIEW_QUERY = `UPDATE reviews 
-            SET rating = "${rating}", description = "${description}"
+            SET rating = "${rating}", description = "${description}, book_id = ${bookId}"
             WHERE review_id = ${reviewId}`;
+            
         await db.query(EDIT_REVIEW_QUERY);
 
         res.send({ success: true, message: 'Review updated successfull' });
