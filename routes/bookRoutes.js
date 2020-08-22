@@ -3,8 +3,10 @@ const db = require('../config/mysql');
 
 router.get('/', async (req, res) => {
 
+    const { authorId } = req.query;
+    const GET_BOOKS_QUERY = authorId ? `SELECT * FROM books WHERE book_author = ${authorId}` : `SELECT * FROM books`;
+
     try {
-        const GET_BOOKS_QUERY = `SELECT * FROM books`;
         const [ books ] = await db.query(GET_BOOKS_QUERY);
 
         res.send({ success: true, books });
@@ -13,7 +15,24 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/add', async (req, res) => {
+router.get('/:bookId', async (req, res) => {
+    const { bookId } = req.params;
+
+    try {
+        const GET_BOOK_BY_ID_QUERY = `SELECT * FROM books
+            WHERE book_id = ${bookId}`;
+
+        const [ books ] = await db.query(GET_BOOK_BY_ID_QUERY);
+        
+        if(books.length === 0) return res.send({ success: false, message: 'No book with the given id' });
+        
+        res.send({ success: true, book: books[0] });
+    } catch(err) {
+        res.send({ success: false, message: err.message });
+    }
+});
+
+router.post('/', async (req, res) => {
 
     const { title, description, authorId } = req.body;
 
@@ -29,7 +48,7 @@ router.post('/add', async (req, res) => {
     }
 });
 
-router.post('/edit/:bookId', async (req, res) => {
+router.put('/:bookId', async (req, res) => {
 
     const { bookId } = req.params;
     const { title, description, authorId } = req.body;
@@ -47,7 +66,7 @@ router.post('/edit/:bookId', async (req, res) => {
     }
 });
 
-router.get('/delete/:bookId', async (req, res) => {
+router.delete('/:bookId', async (req, res) => {
     const { bookId } = req.params;
 
     try {

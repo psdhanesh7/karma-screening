@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const db = require('../config/mysql');
 
-router.get('/:bookId', async (req, res) => {
-    const { bookId } = req.params;
+router.get('/', async (req, res) => {
+    const { bookId } = req.query;
+    const GET_REVIEWS_QUERY = bookId ? `SELECT * FROM reviews WHERE book_id = ${bookId}` : `SELECT * FROM reviews`;
     
     try {
-        const GET_REVIEWS_QUERY = `SELECT rating, description FROM reviews WHERE book_id = ${bookId}`;
         const [ reviews ] = await db.query(GET_REVIEWS_QUERY);
 
         return res.send({ success: true, reviews });
@@ -14,9 +14,23 @@ router.get('/:bookId', async (req, res) => {
     }
 });
 
-router.post('/add/:bookId', async(req, res) => {
-    const { bookId } = req.params;
-    const { rating, description } = req.body;
+router.get('/:reviewId', async (req, res) => {
+    const { reviewId } = req.params;
+
+    try {
+        const GET_REVIEW_BY_ID_QUERY = `SELECT * FROM reviews WHERE review_id = ${reviewId}`;
+        const [ reviews ] = await db.query(GET_REVIEW_BY_ID_QUERY);
+
+        if(reviews.length === 0) return res.send({ success: false, message: 'No review with the given id' });
+
+        res.send({ success: true, review: reviews[0] });
+    } catch(err) {
+        return res.send({ success: false, message: err.message });
+    }
+});
+
+router.post('/', async(req, res) => {
+    const { rating, description, bookId } = req.body;
 
     try {
         const ADD_REVIEW_QUERY = `INSERT 
@@ -31,8 +45,8 @@ router.post('/add/:bookId', async(req, res) => {
     }
 });
 
-router.post('/:bookId/edit/:reviewId', async (req, res) => {
-    const { bookId, reviewId } = req.params;
+router.put('/:reviewId', async (req, res) => {
+    const { reviewId } = req.params;
     const { rating, description } = req.body;
 
     try {
@@ -47,8 +61,8 @@ router.post('/:bookId/edit/:reviewId', async (req, res) => {
     }
 })
 
-router.get('/:bookId/delete/:reviewId', async (req, res) => {
-    const { bookId, reviewId } = req.params;
+router.delete('/:reviewId', async (req, res) => {
+    const { reviewId } = req.params;
 
     try {
         const DELET_REVIEW_QUERY = `DELETE FROM reviews WHERE review_id = ${reviewId}`;

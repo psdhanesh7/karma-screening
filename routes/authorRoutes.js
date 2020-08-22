@@ -13,7 +13,22 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/add', async (req, res) => {
+router.get('/:authorId', async (req, res) => {
+    const { authorId } = req.params;
+
+    try {
+        const GET_AUTHOR_BY_ID_QUERY = `SELECT * FROM authors WHERE author_id = ${authorId}`;
+        const [ donors ] = await db.query(GET_AUTHOR_BY_ID_QUERY);
+
+        if(donors.length === 0) return res.send({ success: false, message: 'No donor with given id' });
+        
+        res.send({ success: true, donor: donors[0] });
+    } catch(err) {
+        return res.send({ success: false, message: err.message });
+    }
+})
+
+router.post('/', async (req, res) => {
     const { name, description } = req.body;
 
     try {
@@ -26,7 +41,7 @@ router.post('/add', async (req, res) => {
     }
 });
 
-router.post('/edit/:authorId', async (req, res) => {
+router.put('/:authorId', async (req, res) => {
     const { authorId } = req.params;
     const { name, description } = req.body;
 
@@ -43,7 +58,7 @@ router.post('/edit/:authorId', async (req, res) => {
     }
 });
 
-router.get('/delete/:authorId', async (req, res) => {
+router.delete('/:authorId', async (req, res) => {
     const { authorId } = req.params;
 
     try {
