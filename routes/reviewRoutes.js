@@ -29,7 +29,7 @@ router.get('/:reviewId', async (req, res) => {
     }
 });
 
-router.post('/', async(req, res) => {
+router.post('/', async (req, res) => {
     const { rating, description, bookId } = req.body;
 
     try {
@@ -51,7 +51,7 @@ router.put('/:reviewId', async (req, res) => {
 
     try {
         const EDIT_REVIEW_QUERY = `UPDATE reviews 
-            SET rating = "${rating}", description = "${description}, book_id = ${bookId}"
+            SET rating = "${rating}", description = "${description}", book_id = ${bookId}
             WHERE review_id = ${reviewId}`;
             
         await db.query(EDIT_REVIEW_QUERY);
@@ -60,7 +60,7 @@ router.put('/:reviewId', async (req, res) => {
     } catch(err) {
         res.send({ success: false, message: err.message });
     }
-})
+});
 
 router.delete('/:reviewId', async (req, res) => {
     const { reviewId } = req.params;
@@ -73,6 +73,6 @@ router.delete('/:reviewId', async (req, res) => {
     } catch(err) {
         res.send({ success: false, message: err.message });
     }
-})
+});
 
 module.exports = router;

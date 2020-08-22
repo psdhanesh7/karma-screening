@@ -78,8 +78,6 @@ router.delete('/:bookId', async (req, res) => {
     } catch(err) {
         res.send({ success: false, message: err.message });
     }
-})
-
-
+});
 
 module.exports = router;
